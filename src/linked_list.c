@@ -7,7 +7,6 @@ struct LinkedList* LL_initialize(int data)
 	ll->head = head;
 	ll->tail = head;
 	head->data = data;
-	ll->length = 1;
 	return ll;
 }
 
@@ -18,7 +17,6 @@ void LL_add_right(struct LinkedList* ll, int data)
 	new->prev = ll->tail;
 	new->next = NULL;
 	ll->tail = new;
-	ll->length++;
 }
 
 void LL_add_left(struct LinkedList* ll, int data)
@@ -28,25 +26,37 @@ void LL_add_left(struct LinkedList* ll, int data)
 	new->next = ll->head;
 	new->prev = NULL;
 	ll->head = new;
-	ll->length++;
 }
 
 struct ListItem* LL_itemAt(struct LinkedList* ll, long index)
 {
-	struct ListItem* current = (struct ListItem*) malloc(sizeof(struct ListItem));
-
-	current = ll->head;
-
-	if(index >= ll->length)
-		return NULL;
 	if(index < 0)
 		return NULL;
 	if(index == 0)
 		return ll->head;
 
-	long i;
-	for(i = 0; i < index; i++)
-		current = ll->head->next;
+	struct ListItem* current = ll->head;
 
+	long i;
+	for(i = 0; current->next != NULL; i++)
+	{
+		if(i == index)
+			return current;
+		current = current->next;
+	}
 	return current;
+}
+
+long LL_length(struct LinkedList* ll)
+{
+	if(ll->head->next == NULL)
+		return 1;
+	struct ListItem* current = ll->head;
+	long length = 1;
+	while(current != NULL)
+	{
+		length++;
+		current = current->next;
+	}
+	return length;
 }
